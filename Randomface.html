@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Abstract Pixel Art</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .pixel-art {
+            display: grid;
+            grid-template-columns: repeat(64, 1px);
+            grid-template-rows: repeat(64, 1px);
+            width: 64px;
+            height: 64px;
+            border: 1px solid #000;
+            margin-bottom: 20px;
+        }
+        .pixel {
+            width: 1px;
+            height: 1px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            background-color: #003049;
+            color: #fdf0d5;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #669bbc;
+        }
+    </style>
+</head>
+<body>
+    <div class="pixel-art"></div>
+    <button id="generate-btn">Generate Art</button>
+
+    <script>
+        const colors = ['#780000', '#c1121f', '#fdf0d5', '#003049', '#669bbc'];
+        const faceColors = ['#ffcc00', '#ffaa00', '#ff9900'];  // Different face colors
+        const eyeColors = ['#000000', '#333333'];
+        const mouthColors = ['#000000', '#ff6666'];
+
+        const pixelArt = document.querySelector('.pixel-art');
+        const button = document.getElementById('generate-btn');
+
+        function generateFace() {
+            // Clear existing face pixels
+            for (let i = 0; i < 64 * 64; i++) {
+                const pixel = pixelArt.children[i];
+                pixel.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            // Randomize face parameters
+            const faceColor = faceColors[Math.floor(Math.random() * faceColors.length)];
+            const eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
+            const mouthColor = mouthColors[Math.floor(Math.random() * mouthColors.length)];
+            const faceWidth = Math.floor(Math.random() * 32) + 16;  // Random width between 16 and 32
+            const faceHeight = Math.floor(Math.random() * 32) + 16; // Random height between 16 and 32
+            const startX = Math.floor(Math.random() * (64 - faceWidth));
+            const startY = Math.floor(Math.random() * (64 - faceHeight));
+
+            // Create a basic face pattern
+            for (let y = startY; y < startY + faceHeight; y++) {
+                for (let x = startX; x < startX + faceWidth; x++) {
+                    pixelArt.children[y * 64 + x].style.backgroundColor = faceColor;
+                }
+            }
+
+            // Add eyes and mouth in pixelated style
+            const eyeSize = Math.min(faceWidth, faceHeight) / 8;
+            const eyeX1 = startX + Math.floor(faceWidth / 4) - Math.floor(eyeSize / 2);
+            const eyeY1 = startY + Math.floor(faceHeight / 4) - Math.floor(eyeSize / 2);
+            const eyeX2 = startX + Math.floor(faceWidth * 3 / 4) - Math.floor(eyeSize / 2);
+            const eyeY2 = startY + Math.floor(faceHeight / 4) - Math.floor(eyeSize / 2);
+
+            // Draw eyes
+            for (let y = eyeY1; y < eyeY1 + eyeSize; y++) {
+                for (let x = eyeX1; x < eyeX1 + eyeSize; x++) {
+                    pixelArt.children[y * 64 + x].style.backgroundColor = eyeColor;
+                }
+            }
+            for (let y = eyeY2; y < eyeY2 + eyeSize; y++) {
+                for (let x = eyeX2; x < eyeX2 + eyeSize; x++) {
+                    pixelArt.children[y * 64 + x].style.backgroundColor = eyeColor;
+                }
+            }
+
+            // Draw mouth
+            const mouthWidth = Math.floor(faceWidth / 4);
+            const mouthHeight = Math.floor(faceHeight / 8);
+            const mouthX = startX + Math.floor(faceWidth / 4);
+            const mouthY = startY + Math.floor(faceHeight * 3 / 4);
+
+            for (let y = mouthY; y < mouthY + mouthHeight; y++) {
+                for (let x = mouthX; x < mouthX + mouthWidth; x++) {
+                    pixelArt.children[y * 64 + x].style.backgroundColor = mouthColor;
+                }
+            }
+        }
+
+        function generateArt() {
+            // Clear existing pixels
+            pixelArt.innerHTML = '';
+
+            // Generate new pixels
+            for (let i = 0; i < 64 * 64; i++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('pixel');
+                pixel.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                pixelArt.appendChild(pixel);
+            }
+
+            // Add a face
+            generateFace();
+        }
+
+        button.addEventListener('click', generateArt);
+
+        // Generate initial art
+        generateArt();
+    </script>
+</body>
+</html>
